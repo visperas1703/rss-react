@@ -1,35 +1,64 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { Component } from 'react';
+import Search from './search';
+import PokemonList from './PokemonList';
+import axios from 'axios';
+import Loader from './loader';
+import { Pokemon, PokemonResponse } from './types';
+import './index.css';
 
-function App() {
-  const [count, setCount] = useState(0);
+interface AppState {
+  pokemons: Pokemon[];
+  searchTerm: string;
+  loading: boolean;
+}
 
-  return (
-    <>
+class App extends Component<{}, AppState> {
+  constructor(props: {}) {
+    super(props);
+    const searchTerm = localStorage.getItem('searchTerm') || '';
+    this.state = {
+      pokemons: [],
+      searchTerm,
+      loading: false,
+    };
+  }
+
+  componentDidMount() {
+    this.fetchPokemons(this.state.searchTerm);
+  }
+
+  fetchPokemons = async (searchTerm: string) => {
+    this.setState({ loading: true });
+    try {
+      const response = await axios.get<PokemonResponse>(
+        `https://pokeapi.co/api/v2/pokemon?limit=100&offset=0`,
+      );
+      const filteredPokemons = response.data.results.filter(
+        (pokemon: Pokemon) => pokemon.name.includes(searchTerm.toLowerCase()),
+      );
+      this.setState({ pokemons: filteredPokemons, loading: false });
+    } catch (error) {
+      console.error('Error fetching pokemons:', error);
+      this.setState({ loading: false });
+    }
+  };
+
+  handleSearch = (searchTerm: string) => {
+    this.setState({ searchTerm });
+    localStorage.setItem('searchTerm', searchTerm);
+    this.fetchPokemons(searchTerm);
+  };
+
+  render() {
+    const { pokemons, loading } = this.state;
+
+    return (
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Search onSearch={this.handleSearch} />
+        {loading ? <Loader /> : <PokemonList pokemons={pokemons} />}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+    );
+  }
 }
 
 export default App;

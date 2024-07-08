@@ -14,6 +14,12 @@ module.exports = {
   ignorePatterns: ['dist'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-hooks', 'react', 'prettier'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
+
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
