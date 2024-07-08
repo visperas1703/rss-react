@@ -1,7 +1,7 @@
 :root {
   font-size: 24px;
   display: flex;
-  justify-content: center
+  justify-content: center;
 }
 
 body {
@@ -21,4 +21,3 @@ button {
   transition: border-color 0.25s;
   margin-bottom: 250px;
 }
-

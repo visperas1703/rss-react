@@ -35,10 +35,15 @@
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write ."
     ]
   }
 }
