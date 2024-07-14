@@ -1,7 +1,12 @@
 import React from 'react';
 
+interface Pokemon {
+  name: string;
+  url: string;
+}
+
 interface PokemonListProps {
-  pokemons: any[];
+  pokemons: Pokemon[];
 }
 
 const PokemonList: React.FC<PokemonListProps> = ({ pokemons }) => {
